@@ -21,10 +21,10 @@ const worker = workerSource.replace("__ORBIT_PAGE__", () => JSON.stringify(html)
 await mkdir(new URL("./dist/server/", import.meta.url), { recursive: true });
 await mkdir(new URL("./dist/.openai/", import.meta.url), { recursive: true });
 await Promise.all([
+  writeFile(new URL("./index.html", import.meta.url), html),
   writeFile(new URL("./dist/index.html", import.meta.url), html),
   writeFile(new URL("./dist/server/index.js", import.meta.url), worker),
   writeFile(new URL("./dist/.openai/hosting.json", import.meta.url), hosting),
 ]);
 
-console.log("Built ORBIT frontend and protected /api/plan worker");
-
+console.log("Built ORBIT GitHub Pages frontend and protected /api/plan worker");
