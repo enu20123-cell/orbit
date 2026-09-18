@@ -3,6 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "check": "node --check src/app.js && node --check server/index.js && node build.mjs"
   }
 }
