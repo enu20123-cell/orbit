@@ -1,7 +1,7 @@
 import os
 import time
 from collections import defaultdict, deque
-from typing import Any
+from typing import Any, Optional
 from urllib.parse import urlparse
 
 import httpx
@@ -48,8 +48,29 @@ app.add_middleware(
 requests_by_ip: dict[str, deque[float]] = defaultdict(deque)
 cache: dict[str, tuple[float, dict[str, Any]]] = {}
 
+COUNTRY_TLDS = {
+    "Netherlands": ".nl", "Germany": ".de", "Finland": ".fi", "Estonia": ".ee",
+    "Hungary": ".hu", "Canada": ".ca", "USA": ".us", "UK": ".uk",
+    "Spain": ".es", "France": ".fr", "Italy": ".it", "Poland": ".pl",
+    "Austria": ".at", "Czechia": ".cz", "Sweden": ".se", "Norway": ".no",
+    "UAE": ".ae", "South Korea": ".kr", "Japan": ".jp", "Australia": ".au",
+    "New Zealand": ".nz", "Switzerland": ".ch", "Belgium": ".be",
+    "Denmark": ".dk", "Ireland": ".ie", "Portugal": ".pt", "Greece": ".gr",
+    "Turkey": ".tr", "Singapore": ".sg", "China": ".cn", "Malaysia": ".my",
+    "Hong Kong": ".hk", "Qatar": ".qa", "Saudi Arabia": ".sa",
+    "Kazakhstan": ".kz", "Lithuania": ".lt", "Latvia": ".lv",
+    "Romania": ".ro", "Bulgaria": ".bg", "Cyprus": ".cy",
+}
 
-def academic_domain(host: str) -> bool:
+ACADEMIC_CONTEXT_TERMS = (
+    "university", "università", "universita", "universität", "universite",
+    "université", "universidad", "universidade", "universiteit", "universitet",
+    "uniwersytet", "college", "institute", "polytechnic", "faculty", "school of",
+    "admission", "bachelor", "undergraduate", "degree", "computer science",
+)
+
+
+def academic_domain(host: str, countries: Optional[list[str]] = None, context: str = "") -> bool:
     blocked = (
         "youtube.com", "wikipedia.org", "reddit.com", "facebook.com", "instagram.com",
         "tiktok.com", "pinterest.", "medium.com", "globaladmissions.com",
@@ -60,10 +81,25 @@ def academic_domain(host: str) -> bool:
         return False
     if host.endswith((".edu", ".gov")) or ".edu." in host or ".ac." in host or ".gov." in host:
         return True
-    return any(word in host for word in (
+    if any(word in host for word in (
         "university", "universit", "college", "institute", "institut", "polytechnic",
         "polytech", "studyin", "studywith", "ucas", "daad", "nuffic", "uni-assist",
-    ))
+    )):
+        return True
+
+    # Many official European university domains are abbreviations (for example
+    # unibo.it, polimi.it or tum.de) and contain no English academic keyword.
+    # Accept such results only when Tavily's title/snippet is academic and the
+    # domain uses the selected country's national suffix.
+    expected_suffixes = {
+        COUNTRY_TLDS[country] for country in (countries or []) if country in COUNTRY_TLDS
+    }
+    normalized_context = " ".join(context.lower().split())
+    return bool(
+        expected_suffixes
+        and any(host.endswith(suffix) for suffix in expected_suffixes)
+        and any(term in normalized_context for term in ACADEMIC_CONTEXT_TERMS)
+    )
 
 
 def host_of(url: str) -> str:
@@ -137,7 +173,11 @@ async def create_plan(profile: Profile, request: Request) -> dict[str, Any]:
     })
     trusted = list(dict.fromkeys(
         host for item in discovery.get("results", [])
-        if (host := host_of(str(item.get("url", "")))) and academic_domain(host)
+        if (host := host_of(str(item.get("url", "")))) and academic_domain(
+            host,
+            profile.countries,
+            f"{item.get('title', '')} {item.get('content', '')}",
+        )
     ))[:40]
     if not trusted:
         raise HTTPException(status_code=502, detail="Не найден официальный университетский источник. Уточните страну или направление")
