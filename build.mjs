@@ -9,14 +9,14 @@ const [template, styles, app, workerSource, hosting] = await Promise.all([
 ]);
 
 const html = template
-  .replace("  <!-- ORBIT_STYLES -->", `  <style>\n${styles}  </style>`)
-  .replace("  <!-- ORBIT_APP -->", `  <script>\n${app}  </script>`);
+  .replace("  <!-- ORBIT_STYLES -->", () => `  <style>\n${styles}  </style>`)
+  .replace("  <!-- ORBIT_APP -->", () => `  <script>\n${app}  </script>`);
 
 if (html === template || !workerSource.includes("__ORBIT_PAGE__")) {
   throw new Error("Build placeholders are missing");
 }
 
-const worker = workerSource.replace("__ORBIT_PAGE__", JSON.stringify(html));
+const worker = workerSource.replace("__ORBIT_PAGE__", () => JSON.stringify(html));
 
 await mkdir(new URL("./dist/server/", import.meta.url), { recursive: true });
 await mkdir(new URL("./dist/.openai/", import.meta.url), { recursive: true });
@@ -27,3 +27,4 @@ await Promise.all([
 ]);
 
 console.log("Built ORBIT frontend and protected /api/plan worker");
+
