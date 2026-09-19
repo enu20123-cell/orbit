@@ -63,7 +63,7 @@ function domainOf(value) {
 
 function academicDomain(host) {
   if (!host) return false;
-  const blocked = ["youtube.com", "wikipedia.org", "reddit.com", "facebook.com", "instagram.com", "tiktok.com", "pinterest.", "medium.com", "globaladmissions.com", "bachelorsportal.com", "mastersportal.com", "studyportals.com", "educations.com", "topuniversities.com", "studyabroad.com", "applyboard.com"];
+  const blocked = ["youtube.com", "wikipedia.org", "reddit.com", "facebook.com", "instagram.com", "tiktok.com", "pinterest.", "medium.com", "globaladmissions.com", "bachelorsportal.com", "mastersportal.com", "studyportals.com", "educations.com", "topuniversities.com", "studyabroad.com", "applyboard.com", "mygermanuniversity.com", "studying-in-germany.org"];
   if (blocked.some(domain => host.includes(domain))) return false;
   if (host.endsWith(".edu") || host.includes(".edu.") || host.includes(".ac.") || host.endsWith(".gov") || host.includes(".gov.")) return true;
   return ["university", "universit", "college", "institute", "institut", "polytechnic", "polytech", "studyin", "studywith", "ucas", "daad", "nuffic", "uni-assist"].some(word => host.includes(word));
