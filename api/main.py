@@ -76,6 +76,7 @@ def academic_domain(host: str, countries: Optional[list[str]] = None, context: s
         "tiktok.com", "pinterest.", "medium.com", "globaladmissions.com",
         "bachelorsportal.com", "mastersportal.com", "studyportals.com",
         "educations.com", "topuniversities.com", "studyabroad.com", "applyboard.com",
+        "mygermanuniversity.com", "studying-in-germany.org",
     )
     if not host or any(item in host for item in blocked):
         return False
