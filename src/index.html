@@ -76,6 +76,19 @@
         <div class="ai-head"><div><div class="eyebrow">AI-исследование</div><h2>Реальные данные из интернета</h2><p id="aiMeta">Запустите подбор — AI найдёт официальные страницы и соберёт персональный план.</p></div><span class="ai-badge loading" id="aiBadge">готов к поиску</span></div>
         <div class="criteria-grid" id="criteriaGrid"></div>
         <div class="ai-answer" id="aiAnswer">Здесь появятся рекомендации, критерии поступления, разбор пробелов профиля и план действий.</div>
+        <div class="ai-actionbar" id="aiActions" hidden>
+          <button type="button" class="ai-action-btn" id="copyAiPlan">Копировать план</button>
+          <button type="button" class="ai-action-btn" id="downloadAiPlan">Скачать .txt</button>
+          <span class="ai-saved-state" id="aiSavedState">Сохранено на этом устройстве</span>
+        </div>
+        <form class="ai-followup" id="aiFollowup" hidden>
+          <div class="ai-followup-head"><strong>Уточнить у AI</strong><span>ORBIT сохранит ваш профиль и выполнит новый поиск по официальным источникам.</span></div>
+          <div class="ai-followup-row">
+            <label class="sr-only" for="followupQuestion">Дополнительный вопрос к AI</label>
+            <input id="followupQuestion" maxlength="320" autocomplete="off" placeholder="Например: оставь только программы на английском до $15 000">
+            <button type="submit" id="askFollowup">Спросить AI →</button>
+          </div>
+        </form>
         <div class="ai-sources" id="aiSources"></div>
         <p class="ai-disclaimer">Данные о требованиях и дедлайнах меняются. Для подачи используйте ссылку на официальный сайт и перепроверьте условия выбранного набора.</p>
       </section>
