@@ -51,7 +51,8 @@ function makeQuery(p) {
     "Applicant GPA " + p.gpa + "/5, IELTS " + (p.ielts || "not taken") + ", SAT " + (p.sat || "not taken") + ", tuition budget USD " + p.budget + ".",
     "Use only facts supported by the search sources. Do not invent exact tuition, scores or deadlines. If a fact is missing, say it must be verified.",
     "Recommend 4 to 5 relevant undergraduate programs when evidence is available; do not confuse bachelor, master or transfer requirements.",
-    "Ответ по-русски: ВУЗЫ И ПРОГРАММЫ, КРИТЕРИИ ОЦЕНКИ, ПЕРСОНАЛЬНЫЙ ПЛАН 0–30 и 30–90 дней, ЧТО НУЖНО ПРОВЕРИТЬ."
+    "Return four clearly separated sections with these exact Russian headings: ВУЗЫ И ПРОГРАММЫ, КРИТЕРИИ ОЦЕНКИ, ПЕРСОНАЛЬНЫЙ ПЛАН, ЧТО НУЖНО ПРОВЕРИТЬ.",
+    "In ВУЗЫ И ПРОГРАММЫ number every bachelor's option as 1), 2), 3). Separate criteria and action steps with semicolons; include 0–30 and 30–90 day actions. Do not use markdown tables."
   ].join(" ");
 }
 
